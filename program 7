@@ -1,0 +1,96 @@
+#Program 7 Naive Baye's Classifictaion algorithm
+#Program 7 Naive Baye's Classifictaion algorithm
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+placement = pd.read_csv("/home/dsbatch1/Downloads/Placement_Data.csv")
+
+
+placement.head()
+
+placement.info()
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+ 
+placement.isna().sum()
+
+X = placement[['ssc_p','hsc_p','degree_p','etest_p','mba_p']]
+y = placement.status.values
+
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(y)
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.2, random_state= 42)
+
+
+from sklearn.naive_bayes import GaussianNB
+Gnd = GaussianNB()
+Gnd.fit(X_train,y_train)
+
+
+print("The Gaussian Score : ",Gnd.score(X_train,y_train)*100)
+
+prediction = Gnd.predict(X_test)
+
+from sklearn.metrics import confusion_matrix , classification_report
+print("The classification report for GaussianNB :\n ",classification_report(y_test,prediction))
+print("Confusion matrix : ")
+cm = confusion_matrix(y_test,prediction)
+print(cm)
+sns.heatmap(cm , annot=True , fmt = 'd' , cmap='Greens')
+plt.xlabel("Prediction")
+plt.ylabel("actual")
+plt.show()
+
+
+from sklearn.naive_bayes import MultinomialNB
+mnb = MultinomialNB()
+mnb.fit(X_train,y_train)
+
+from sklearn.metrics import confusion_matrix , classification_report
+print("The classification report MultinomialNB : \n",classification_report(y_test,prediction2))
+print("Confusion matrix : ")
+cm = confusion_matrix(y_test,prediction2)
+print(cm)
+sns.heatmap(cm , annot=True , fmt = 'd' , cmap='Greens')
+plt.xlabel("Prediction")
+plt.ylabel("actual")
+plt.show()
+
+
+from sklearn.naive_bayes import MultinomialNB
+mnb = MultinomialNB()
+mnb.fit(X_train,y_train)
+prediction2 = mnb.predict(X_test)
+
+
+print("The MultinomialNB Score : ",mnb.score(X_train,y_train)*100)
+
+
+from sklearn.naive_bayes import BernoulliNB
+bnb = BernoulliNB()
+bnb.fit(X_train,y_train)
+prediction3 = bnb.predict(X_test)
+print("The Bernoulli Score : ",bnb.score(X_train,y_train)*100)
+
+
+from sklearn.metrics import confusion_matrix , classification_report
+print("The classification report BernoulliNB\n : ",classification_report(y_test,prediction3))
+print("Confusion matrix : ")
+cm = confusion_matrix(y_test,prediction3)
+print(cm)
+sns.heatmap(cm , annot=True , fmt = 'd' , cmap='Greens')
+plt.xlabel("Prediction")
+plt.ylabel("actual")
+plt.show()
+
+
+
+
