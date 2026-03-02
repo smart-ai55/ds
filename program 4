@@ -1,0 +1,122 @@
+#KNN Algorithm
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+
+df = pd.read_csv('C:/Users/user1/Downloads/breastcancer1.csv')
+
+df.columns
+
+df.info()
+
+df.isna().sum()
+
+df['radius_mean'] = df['radius_mean'].fillna(df['radius_mean'].mean())
+df['texture_mean'] = df['texture_mean'].fillna(df['texture_mean'].mean())
+df['perimeter_mean'] = df['perimeter_mean'].fillna(df['perimeter_mean'].mean())
+df['area_mean'] = df['area_mean'].fillna(df['area_mean'].mean())
+df['smoothness_mean'] = df['smoothness_mean'].fillna(df['smoothness_mean'].mean())
+df['compactness_mean'] = df['compactness_mean'].fillna(df['compactness_mean'].mean())
+df['concavity_mean'] = df['concavity_mean'].fillna(df['concavity_mean'].mean())
+df['concave points_mean'] = df['concave points_mean'].fillna(df['concave points_mean'].mean())
+df['symmetry_mean'] = df['symmetry_mean'].fillna(df['symmetry_mean'].mean())
+df['fractal_dimension_mean'] = df['fractal_dimension_mean'].fillna(df['fractal_dimension_mean'].mean())
+df['radius_se'] = df['radius_se'].fillna(df['radius_se'].mean())
+df['texture_se'] = df['texture_se'].fillna(df['texture_se'].mean())
+
+df.dropna(inplace=True)
+df.isna().sum()
+
+y=df['diagnosis']
+X=df[['texture_mean','radius_mean']]
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8, 6))
+plt.subplot(1, 2, 1)
+plt.boxplot(df['texture_mean'])
+plt.title('Box plot for texture_mean')
+plt.ylabel('Texture Mean')
+plt.subplot(1, 2, 2)
+plt.boxplot(df['radius_mean'])
+plt.title('Box plot for radius_mean')
+plt.ylabel('Radius Mean')
+plt.show()
+
+Q1_texture = df['texture_mean'].quantile(0.25)
+Q3_texture = df['texture_mean'].quantile(0.75)
+IQR_texture = Q3_texture - Q1_texture
+Q1_radius = df['radius_mean'].quantile(0.25)
+Q3_radius = df['radius_mean'].quantile(0.75)
+IQR_radius = Q3_radius - Q1_radius
+lower_bound_texture = Q1_texture - 1.5 * IQR_texture
+upper_bound_texture = Q3_texture + 1.5 * IQR_texture
+lower_bound_radius = Q1_radius - 1.5 * IQR_radius
+upper_bound_radius = Q3_radius + 1.5 * IQR_radius
+df_cleaned = df[(df['texture_mean'] >= lower_bound_texture) & (df['texture_mean'] <= upper_bound_texture) &
+(df['radius_mean'] >= lower_bound_radius) & (df['radius_mean'] <= upper_bound_radius)]
+print("Original dataset shape:", df.shape)
+print("Cleaned dataset shape:", df_cleaned.shape)
+
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8, 6))
+plt.subplot(1, 2, 1)
+plt.boxplot(df_cleaned['texture_mean'])
+plt.title('Box plot for texture_mean')
+plt.ylabel('Texture Mean')
+plt.subplot(1, 2, 2)
+plt.boxplot(df_cleaned['radius_mean'])
+plt.title('Box plot for radius_mean')
+plt.ylabel('Radius Mean')
+plt.show()
+
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(y)
+
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+k_values = list(range(1, 30))
+accuracies = []
+for k in k_values:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    predictions = knn.predict(X_test)
+    accuracy = accuracy_score(y_test, predictions)
+    accuracies.append(accuracy)
+for k, accuracy in zip(k_values, accuracies):
+    print(f'k={k}, Accuracy: {accuracy:.4f}')
+best_k = k_values[accuracies.index(max(accuracies))]
+print(f'Best k: {best_k} with accuracy: {max(accuracies):.4f}')
+
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+best_k = 6
+knn = KNeighborsClassifier(n_neighbors=best_k)
+knn.fit(X_train, y_train)
+predictions = knn.predict(X_test)
+conf_matrix = confusion_matrix(y_test, predictions)
+print("Confusion Matrix:")
+print(conf_matrix)
+accuracy = accuracy_score(y_test, predictions)
+print("Accuracy Score:", accuracy)
+precision = precision_score(y_test, predictions)
+print("Precision Score:", precision)
+recall = recall_score(y_test, predictions)
+print("Recall Score:", recall)
+f1 = f1_score(y_test, predictions)
+print("F1 Score:", f1)
+
+
+sns.heatmap(conf_matrix, annot=True,fmt='g',cmap="Reds")
+
+sns.heatmap(df.select_dtypes(exclude=['object']).corr())      
