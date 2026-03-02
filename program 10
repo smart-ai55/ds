@@ -1,0 +1,76 @@
+#WordCloud
+import re
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk.probability import FreqDist
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+import nltk
+nltk.download('punkt_tab')
+
+data = open('C:/Users/user1/Downloads./output.txt','r').read()
+
+sentences = sent_tokenize(data)
+words = word_tokenize(data)
+
+len(data)
+
+ 
+words = [word.lower() for word in words if word.isalpha()]
+
+ 
+stop_words = set(stopwords.words('english'))
+filtered_words = [word for word in words if word not in stop_words]
+
+len(stop_words)
+
+stemmer = PorterStemmer()
+stemmed_words = [stemmer.stem(word) for word in filtered_words]
+
+lemmatizer = WordNetLemmatizer()
+lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_words]
+processed_text = ' '.join(lemmatized_words)
+
+len(processed_text)
+
+
+words = nltk.word_tokenize(processed_text)
+word_freq = nltk.FreqDist(words)
+top_words = word_freq.most_common(40)
+
+top_words
+
+from wordcloud import WordCloud,STOPWORDS
+from PIL import Image
+import numpy as np 
+
+wordcloud = WordCloud(width=1000,height=500,random_state=1,background_color='#0A1B27',colormap='Pastel1',
+                     collocations=False,stopwords=STOPWORDS).generate_from_frequencies(dict(top_words))
+plt.figure(figsize=(20,15))
+plt.imshow(wordcloud)
+plt.axis("off")
+
+
+car_mask = np.array(Image.open("C:/Users/user1/Downloads./cloud2.jpeg"))
+car_mask = 255 - car_mask
+imgggg = WordCloud(width=1000,height=500,random_state=1,mask=car_mask,colormap='Pastel1',
+                     collocations=False,stopwords=STOPWORDS,  background_color='rgba(0, 0, 0, 0)',  # Transparent background
+    mode='RGBA' ).generate_from_frequencies(dict(top_words))
+
+plt.figure(figsize=(20,15))
+plt.imshow(imgggg)
+plt.axis("off")
+
+
+
+
+
+
+
