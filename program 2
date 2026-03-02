@@ -1,0 +1,74 @@
+#Program 2
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df=pd.read_csv("./Downloads/mpg_raw.csv")
+
+print(df.info())
+
+print(df.head(2))
+
+print(df.tail(2))
+
+df.sample(2)
+
+print(df.describe())
+
+print(df.shape)
+
+print(df.dtypes)
+
+print(df.isna().sum())
+
+df.dropna(inplace=True)
+print(df.isna().sum())
+
+#plt.figure(figsize=(12,6))
+sns.histplot(x=df["mpg"],kde=True,bins=20)
+plt.title('Distributiopn of mpg')
+plt.show()
+
+#plt.figure(figsize=(12,6))
+sns.violinplot(x=df['horsepower'])
+plt.title('Violin plot')
+plt.show()
+
+sns.boxplot(x=df["cylinders"])
+plt.title('Boxplot')
+plt.show()
+
+plt.figure(figsize=(12,6))
+sns.heatmap(df.select_dtypes(exclude=['object']).corr(),annot=True,cmap="coolwarm",fmt=' .2f')
+plt.title('heatmap')
+plt.show()
+
+#Standardization
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+continuous_vars = ['mpg', 'displacement', 'horsepower', 'weight', 'acceleration']
+df[continuous_vars] = scaler.fit(df[continuous_vars]).transform(df[continuous_vars])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
