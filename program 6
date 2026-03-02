@@ -1,0 +1,130 @@
+#Program 6 = Random Forest 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix,accuracy_score
+
+df = pd.read_excel("C:/Users/user1/Downloads/random_forest_dataset.xlsx")
+df.head()
+
+!pip install --upgrade openpyxl
+
+df = pd.read_excel("C:/Users/user1/Downloads/random_forest_dataset.xlsx", header=1)
+df.head()
+
+df.isnull().sum()
+
+# handle outliers
+df.dropna(inplace=True)
+# there is this extra space after the column names
+x = df.drop(['Sl No ',"USN ","Name ","Title ","Grade"],axis=1)
+y = df.Grade
+x.head()
+
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(df['Grade'])
+
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.3)
+rf = RandomForestClassifier(random_state=42)
+rf.fit(x_train,y_train)
+
+feature_importances = pd.Series(rf.feature_importances_, index=x.columns).sort_values(ascending=False)
+print(feature_importances)
+plt.figure(figsize=(10, 6))
+feature_importances.plot(kind='bar')
+plt.xlabel('Feature')
+plt.ylabel('Importance')
+plt.title('Feature Importance')
+plt.show()
+
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.ensemble import RandomForestClassifier
+param_grid = {
+    'n_estimators': [100, 200, 300], 
+    'max_depth': [10, 20, 30],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4] 
+}
+
+grid_search = GridSearchCV(estimator=rf, param_grid = param_grid, cv=5, n_jobs=-1,verbose=1)
+grid_search.fit(x_train,y_train)
+
+best_params = grid_search.best_params_
+best_params
+
+best_rf = RandomForestClassifier(random_state=42,**best_params)
+best_rf.fit(x_train,y_train)
+y_pred = best_rf.predict(x_test)
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, f1_score, confusion_matrix,
+    classification_report
+)
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred, average='weighted')
+recall = recall_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f" Accuracy: {accuracy:.4f}")
+print(f" Precision: {precision:.4f}")
+print(f" Recall: {recall:.4f}")
+print(f" F1 Score: {f1:.4f}")
+print("\n Classification Report:\n", classification_report(y_test, y_pred))
+
+
+
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(6,4))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=np.unique(y_test), yticklabels=np.unique(y_test))
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("Confusion Matrix")
+plt.show()
+
+
+from sklearn.tree import plot_tree
+plt.figure(figsize=(80,40))
+plot_tree(best_rf.estimators_[5], feature_names = x.columns,class_names=['A', 'B', 'C', 'S'],filled=True);
+
+from sklearn.tree import plot_tree
+plt.figure(figsize=(80,40))
+plot_tree(best_rf.estimators_[7], feature_names = x.columns,class_names=['A', 'B', 'C', 'S'],filled=True);
+
+
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.metrics import  ConfusionMatrixDisplay
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from scipy.stats import randint
+param_dist = {
+  'n_estimators': randint(100, 500),
+  'max_depth': randint(3, 15),
+  'min_samples_split': randint(2, 10),
+  'min_samples_leaf': randint(1, 5)
+}
+
+
+ 
+rf = RandomForestClassifier(random_state=42, n_jobs=-1)
+rand_search = RandomizedSearchCV(
+  rf, param_distributions=param_dist,
+  n_iter=10, cv=5, scoring='accuracy',
+  n_jobs=-1, random_state=42)
+rand_search.fit(x_train,y_train)
+best_rf = rand_search.best_estimator_
+print('Best hyperparameters:',  rand_search.best_params_)
+y_pred = best_rf.predict(x_test)
+cm = confusion_matrix(y_test, y_pred)
+ConfusionMatrixDisplay(confusion_matrix=cm).plot();
+
+
+
+
+
+
