@@ -1,0 +1,28 @@
+#Program 3
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+df=pd.read_csv("./Downloads/mpg_raw.csv")
+df.dropna(inplace=True)
+
+plt.figure(figsize=(10,8))
+df[['mpg','cylinders','displacement','horsepower','weight','acceleration']].hist(figsize=(10,10))
+plt.title("Histogram distribution")
+plt.show()
+
+plt.figure(figsize=(8,8))
+sns.scatterplot(data=df,x='weight',y='mpg')
+plt.title("Scatter plt")
+plt.show()
+
+plt.figure(figsize=(8,5))
+sns.countplot(data=df,x='origin')
+plt.title("Countplot")
+plt.show()
+
+plt.figure(figsize=(7,6))
+sns.pointplot(data=df,x='model_year',y='mpg')
+plt.title("pointplot")
+plt.show()
+
