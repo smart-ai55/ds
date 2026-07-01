@@ -1,0 +1,830 @@
+Prgm 1: Develop an app to display a Progress Bar and show a message with Alert Dialog 
+
+Activity_main.xml(app>res>layout>activity_main.xml>Select code)
+ 
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:orientation="vertical" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent" 
+    android:gravity="center"> 
+ 
+    <TextView 
+        android:id="@+id/textView" 
+        android:text="@string/hello_text" 
+        android:textSize="24sp" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"/> 
+ 
+    <Button 
+        android:id="@+id/button" 
+        android:text="@string/click_me" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"/> 
+ 
+</LinearLayout> 
+ 
+
+Stirng.xml (app>res>values>strings.xml)
+
+
+<string name="app_name">My Application</string> 
+<string name="click_me">Click Me</string> 
+<string name="hello_text">Hello World</string> 
+
+
+Mainactivity.java (app>java>MainActivity.java)
+
+package com.example.firstapp1mca; 
+import android.app.AlertDialog; 
+import android.os.Bundle; 
+import android.os.Handler; 
+import android.widget.Button; 
+import android.widget.ProgressBar; 
+import android.widget.TextView; 
+ 
+import androidx.appcompat.app.AppCompatActivity; 
+ 
+public class MainActivity extends AppCompatActivity { 
+ 
+    ProgressBar progressBar; 
+    Button button; 
+    TextView txtProgress; 
+    int progress = 0; 
+ 
+    Handler handler = new Handler(); 
+ 
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+ 
+        progressBar = findViewById(R.id.progressBar); 
+        button = findViewById(R.id.btnStart); 
+        txtProgress = findViewById(R.id.txtProgress); 
+ 
+        button.setOnClickListener(v -> startProgress()); 
+    } 
+ 
+    private void startProgress() { 
+        progress = 0; 
+        txtProgress.setText("Progress: 0%"); 
+        progressBar.setProgress(0); 
+ 
+        handler.postDelayed(new Runnable() { 
+            @Override 
+            public void run() { 
+ 
+                progress += 5; 
+                progressBar.setProgress(progress); 
+                txtProgress.setText("Progress: " + progress + "%"); 
+ 
+                if (progress < 100) { 
+                    handler.postDelayed(this, 200); // repeat 
+                } else { 
+                    showAlert(); 
+                } 
+            } 
+        }, 200); 
+    } 
+ 
+    private void showAlert() { 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this); 
+        builder.setTitle("Completed"); 
+        builder.setMessage("Progress Finished!"); 
+        builder.setPositiveButton("OK", null); 
+        builder.show(); 
+    } 
+} 
+
+
+
+
+Program 2 : Creating an application that displays message based on the screen orientation.   
+
+1. Click Start →Android Studio, a Welcome to Android Studio dialog box will appear.  
+
+Click New Project, the New Project Dialog box appears.  
+
+2. Choose Empty Views Activity then click Next.  
+
+3. Specify the Name of your project, Select the Language as Java, and Select the  
+Minimum SDK as API 16 (“Jelly Bean”, Android 4.1). Click Finish Button.  
+
+4. Create two Button resources in activity_main.xml and update the following code.  
+ 
+2] avtivity main xml 
+ 
+Add this to AndroidManifest.xml 
+ 
+<activity android:name=".SecondActivity" /> 
+  
+ 
+Java Part: 
+
+1.MainActivity.java 
+ 
+package com.example.prgm2; 
+ 
+import android.content.Intent; 
+import android.os.Bundle; 
+import android.view.View; 
+import android.widget.Button; 
+import android.widget.EditText; 
+import androidx.appcompat.app.AppCompatActivity; 
+ 
+public class MainActivity extends AppCompatActivity { 
+ 
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+ 
+        final EditText editText = findViewById(R.id.editTextMessage); 
+        Button button = findViewById(R.id.buttonSend); 
+ 
+        button.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View v) { 
+                String message = editText.getText().toString(); 
+ 
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class); 
+ 
+                intent.putExtra("USER_DATA", message); 
+ 
+                startActivity(intent); 
+            } 
+        }); 
+    } 
+} 
+ 
+(Make another Java file with this name) 
+
+2.SecondActivity.Java 
+ 
+package com.example.prgm2; 
+ 
+import android.content.Intent; 
+import android.os.Bundle; 
+import android.widget.TextView; 
+import androidx.appcompat.app.AppCompatActivity; 
+ 
+public class SecondActivity extends AppCompatActivity { 
+ 
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_second); 
+ 
+        TextView textView = findViewById(R.id.textViewResult); 
+ 
+        Intent intent = getIntent(); 
+ 
+        String receivedData = intent.getStringExtra("USER_DATA"); 
+ 
+        if (receivedData != null) { 
+            textView.setText(receivedData); 
+        } 
+    } 
+} 
+ 
+ 
+ 
+XML Part 
+
+3.activity_main.xml 
+ 
+<?xml version="1.0" encoding="utf-8"?> 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent" 
+    android:background="#C88686" 
+    android:gravity="center" 
+    android:orientation="vertical" 
+    android:padding="20dp"> 
+ 
+    <EditText 
+        android:id="@+id/editTextMessage" 
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content" 
+        android:hint="Enter a message to pass" /> 
+ 
+    <Button 
+        android:id="@+id/buttonSend" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="20dp" 
+        android:text="Submit" /> 
+ 
+</LinearLayout> 
+ 
+ 
+(Make another XML file with this name) 
+
+4.activity_second.xml 
+ 
+<?xml version="1.0" encoding="utf-8"?> 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent" 
+    android:background="#419944" 
+    android:gravity="center" 
+    android:orientation="vertical"> 
+ 
+    <TextView 
+        android:id="@+id/textViewResult" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:text="Data will appear here" 
+        android:textColor="#FFFFFF" 
+        android:textSize="20dp" 
+        android:textStyle="bold" /> 
+ 
+</LinearLayout> 
+ 
+ 
+ 
+ 
+ 
+Program 03 : 3. Build a simple web page using PWA by adding a Service Worker
+
+Index.html 
+ 
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8"> 
+  <title>Simple PWA</title> 
+  <!-- PWA Manifest --> 
+ <!-- <link rel="manifest" href="manifest.json"> --> 
+  <!-- Mobile support --> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+</head> 
+ 
+<body> 
+  <h1>Hello, PWA </h1> 
+  <p>This is my first page 
+<table border="1"> 
+ 
+        <tr> 
+            <th>Picture</th> 
+            <th>Description</th> 
+        </tr> 
+ 
+        <tr> 
+            <td><img src="#rvce_logo" width="100px" height="100px"></td> 
+            <td>RVCE Logo</td> 
+        </tr> 
+        <tr> 
+            <td><img src="#pwa_icon" width="100px" height="100px"></td> 
+            <td>PWA ICON</td> 
+        </tr> 
+ 
+    </table> 
+  </p> 
+ 
+  <script> 
+    if ("serviceWorker" in navigator) { 
+  window.addEventListener("load", () => { 
+    navigator.serviceWorker.register("./serviceworker.js")});} 
+  </script> 
+</body> 
+</html> 
+ 
+serviceworker.js 
+ 
+self.addEventListener('load', (event) =>  
+  { console.log('Service Worker loading.');  }); 
+ 
+self.addEventListener('install', (event) =>  
+  { console.log('Service Worker installing.'); }); 
+ 
+self.addEventListener('activate', (event) =>  
+  { console.log('Service Worker activating.'); }); 
+ 
+self.addEventListener('fetch', (event) =>  
+{ console.log('Fetch event handled.'); }); 
+
+
+
+
+
+Program 4: Create a login page to authenticate a user using PWA with Manifest file 
+ 
+Step 1: Make a file first.html  
+
+<html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta http-equiv="X-UA-Compatible" content="IE=edge">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Document</title>  
+<link rel="manifest" href="/manifest.json">  
+</head>  
+<body>  
+<script src="/js/log.js"></script>  
+<p>Username: <input type="text" name="username" id="name"></p>  
+<p>Password: <input type="password" name="password" id="pass"></p>  
+<p><input type="submit" value="check" onclick="verify()"></p> 
+</body>  
+</html>  
+
+Step 2: Make manifest.json  
+
+{  
+"name": "my_first_manifest",  
+"short_name": "first_manifest",  
+"start_url": "/first.html",  
+"display": "fullscreen",  
+"background_color": "#ffff00",  
+"description": "A simple applicationfor manifestation",  
+"orientation": "portrait-primary",  
+"theme_color":"#2196F3",  
+"icons": [  
+{  
+"src": "/icons/rvce_logo.png",  
+"sizes": "432x432",  
+"type": "image/png"  
+},  
+{  
+"src": "/icons/rvce_logo (1).png",  
+"sizes": "108x108",  
+"type": "image/png"  
+},  
+{  
+"src": "/icons/rvce_logo (2).png",  
+"sizes": "216x216",  
+"type": "image/png"  
+}  
+]  
+} 
+ 
+Make file log.js for the verification of the login credentials  
+
+localStorage.setItem("Username","rvce");  
+localStorage.setItem("Pasword","rvce");  
+function verify(){  
+let u1 = document.getElementById("name").value; 
+let p1 = document.getElementById("pass").value;  
+let un = localStorage.getItem("Username");  
+let pa = localStorage.getItem("Password");  
+alert(“Local username, password: “+un+” ”+pa+” Entered username, password: ”+u1+ “ ”+p1);  
+let sname =un.localeCompare(u1);  
+let spass =pa.localeCompare(p1);  
+if( stun !=false && sname !=false ) 
+{ alert("authentication done"); } 
+else { alert("authentication failure"); }  
+} 
+
+
+
+
+Program 5: Demonstrate online and offline web page load using PWA, Service Worker and Caching
+
+Index.html  
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta charset="UTF-8"> 
+<link rel="manifest" href="manifest.json"> 
+<title>PWA Demo</title> 
+</head> 
+<body> 
+<h2>PWA Caching Demo</h2> 
+<img src="pwa_icon.png" alt="PWA Icon" width="200">       
+<p>This is a simple PWA demo that caches an image and displays it even when offline.</p> 
+  <script> 
+    if ('serviceWorker' in navigator) { 
+      navigator.serviceWorker.register('sw.js') 
+    } 
+  </script> 
+</body> 
+</html> 
+ 
+ 
+Sw.js 
+ 
+const CACHE = 'pwa-v1'; 
+const ASSETS = ['/index.html','/manifest.json','/pwa_icon.png'];  
+self.addEventListener('install', e => 
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))) 
+); 
+ 
+self.addEventListener('activate', e => 
+  e.waitUntil(caches.keys().then(keys => 
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))) 
+  )) 
+); 
+ 
+self.addEventListener('fetch', e => 
+  e.respondWith( 
+    fetch(e.request) 
+      .then(res => { 
+        caches.open(CACHE) 
+ .then(c => c.put(e.request, res.clone())); 
+        return res; 
+      }) 
+.catch(() => caches.match(e.request)) 
+) 
+); 
+
+Manifest.json 
+
+{  
+"name": "PWA Online/Offline",  
+"short_name": "On/Off",  
+"start_url": "./index.html",  
+"display": "fullscreen",  
+"background_color": "#ffff00",  
+"description": "A simple applicationfor manifestation",  
+"orientation": "portrait-primary",  
+"theme_color":"#2196F3", 
+"icons": [  
+{  
+}  
+] 
+} 
+"src": "pwa_icon.png",  
+"sizes": "512x512",  
+"type": "image/png"  
+
+
+
+
+
+Program 6: Build an application to do a stock display using PWA using a raw JSON file 
+
+Make 4 files 
+1. stocks.json 
+2. manifest.json 
+3. index.html 
+4. service-worker.js 
+
+#stocks.json  
+[ 
+  { 
+    "symbol": "NVDA", 
+    "name": "NVIDIA Corporation", 
+    "price": 485.20 
+  }, 
+  { 
+    "symbol": "GOOGL", 
+    "name": "Alphabet Inc.", 
+    "price": 140.12 
+  }, 
+  { 
+    "symbol": "MSFT", 
+    "name": "Microsoft Corp.", 
+    "price": 374.58 
+  } 
+] 
+ 
+ 
+ 
+#manifest.json 
+ 
+{ 
+  "name": "Stock Display PWA", 
+  "short_name": "Stocks", 
+  "start_url": "./index.html", 
+  "display": "standalone", 
+  "background_color": "#ffffff", 
+  "theme_color": "#333333", 
+  "icons": [ 
+    { 
+      "src": "./icon.png", 
+      "sizes": "any", 
+      "type": "image/png" 
+    } 
+  ] 
+} 
+ 
+ 
+#index.html 
+ 
+<!DOCTYPE html> 
+<html lang="en"> 
+ 
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Stock Display PWA</title> 
+  <link rel="manifest" href="./manifest.json"> 
+</head> 
+ 
+<body> 
+  <h1>Stock Display PWA</h1> 
+ 
+  <div id="stock-container"> 
+    <p>Loading stock data...</p> 
+  </div> 
+ 
+  <script> 
+    if ('serviceWorker' in navigator) 
+      navigator.serviceWorker.register('/service-worker.js') 
+ 
+    fetch('stocks.json') 
+      .then((r) => { return r.json(); }) 
+      .then((s) => { 
+        let table = 
+          `<table> 
+          <tr> 
+          <th>Company</th> 
+          <th>Price</th> 
+          <th>Symbol</th> 
+          </tr> `; 
+ 
+        for (let item of s) { 
+          table += `<tr> 
+          <td>${item.name}</td> 
+          <td>${item.price}</td> 
+          <td>${item.symbol}</td> 
+          </tr> `; 
+        } 
+ 
+        table += `</table>`; 
+        document.getElementById('stock-container').innerHTML = table; 
+ 
+      }) 
+  </script> 
+</body> 
+ 
+</html> 
+ 
+ 
+#servicd-worker.js 
+ 
+const CACHE = 'prgm-6'; 
+const ASSETS = [ 
+  './', 
+  './index.html', 
+  './styles.css', 
+  './app.js', 
+  './stocks.json', 
+  './manifest.json', 
+  './icon.svg' 
+]; 
+ 
+self.addEventListener('install', e => 
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))) 
+); 
+ 
+self.addEventListener('activate', e => 
+  e.waitUntil(caches.keys().then(keys => 
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))) 
+  )) 
+); 
+ 
+self.addEventListener('fetch', e => 
+  e.respondWith( 
+    fetch(e.request) 
+      .then(res => { 
+        caches.open(CACHE).then(c => c.put(e.request, res.clone())); 
+        return res; 
+      }) 
+      .catch(() => caches.match(e.request)) 
+  ) 
+); 
+ 
+ 
+Program 7: Code a Click Counter App in Flutter using a basic UI layout with state management
+
+import 'package:flutter/material.dart'; 
+ 
+void main() { 
+  runApp(MaterialApp( 
+    home: CounterScreen(), 
+  )); 
+} 
+ 
+class CounterScreen extends StatefulWidget { 
+  @override 
+  State<CounterScreen> createState() => _CounterScreenState(); 
+} 
+ 
+class _CounterScreenState extends State<CounterScreen> { 
+  int counter = 0; 
+ 
+  @override 
+  Widget build(BuildContext context) { 
+    return Scaffold( 
+      appBar: AppBar( 
+        title: Text("Counter App"), 
+      ), 
+      body: Center( 
+        child: Column( 
+          mainAxisAlignment: MainAxisAlignment.center, 
+          children: [ 
+            Text( 
+              "$counter", 
+              style: TextStyle(fontSize: 50), 
+            ), 
+ 
+            SizedBox(height: 20), 
+ 
+            ElevatedButton( 
+              onPressed: () { 
+                setState(() { 
+                  counter++; 
+                }); 
+              }, 
+              child: Text("Increment"), 
+            ), 
+ 
+            ElevatedButton( 
+              onPressed: () { 
+                setState(() { 
+                  counter--; 
+                }); 
+              }, 
+              child: Text("Decrement"), 
+            ), 
+ 
+            ElevatedButton( 
+              onPressed: () { 
+                setState(() { 
+                  counter = 0; 
+                }); 
+              }, 
+              child: Text("Reset"), 
+            ), 
+          ], 
+        ), 
+      ), 
+    ); 
+  } 
+} 
+ 
+ 
+
+
+program 8:Create a Message Toggle Application using the basics widgets in Flutter  
+
+import 'package:flutter/material.dart'; 
+ 
+void main() => runApp(MessageToggleApp()); 
+ 
+class MessageToggleApp extends StatelessWidget { 
+  const MessageToggleApp({super.key}); 
+ 
+  @override 
+  Widget build(BuildContext context) { 
+    return MaterialApp( 
+      title: 'Message Toggle', 
+      home: MessageHome(), 
+      debugShowCheckedModeBanner: false, 
+    ); 
+  } 
+} 
+ 
+class MessageHome extends StatefulWidget { 
+  const MessageHome({super.key}); 
+ 
+  @override 
+  _MessageHomeState createState() => _MessageHomeState(); 
+} 
+ 
+class _MessageHomeState extends State<MessageHome> { 
+  bool _showHello = true; 
+ 
+  void _toggleMessage() { 
+    setState(() { 
+      _showHello = !_showHello; 
+    }); 
+  } 
+ 
+  @override 
+  Widget build(BuildContext context) { 
+    return Scaffold( 
+      appBar: AppBar(title: Text('Message Toggle App'), centerTitle: true), 
+      body: Center( 
+        child: Column( 
+          mainAxisAlignment: MainAxisAlignment.center, 
+          children: [ 
+            Text( 
+              _showHello 
+                  ? 'RV College of Engineering!' 
+                  : 'Go Change the World!', 
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold), 
+            ), 
+            SizedBox(height: 20), 
+            ElevatedButton( 
+              onPressed: _toggleMessage, 
+              child: Text('Toggle Message'), 
+            ), 
+          ], 
+        ), 
+      ), 
+    ); 
+  } 
+} 
+ 
+
+
+Program 09:Demonstrate the use the Gesture Detector widget to respond to double-tap and swipe events 
+using Flutter  
+
+import 'package:flutter/material.dart'; 
+ 
+void main() { 
+  runApp(MaterialApp(home: GestureDemo())); 
+} 
+ 
+class GestureDemo extends StatefulWidget { 
+  const GestureDemo({super.key}); 
+ 
+  @override 
+  GestureDemoState createState() => GestureDemoState(); 
+} 
+ 
+class GestureDemoState extends State<GestureDemo> { 
+  String _message = 'Double Tap or Swipe'; 
+ 
+  void _changeMessageOnSwipe(DragUpdateDetails details) { 
+    setState(() { 
+      if (details.delta.dx > 0) { 
+        _message = 'Swipe Right'; 
+      } else { 
+        _message = 'Swipe Left'; 
+      } 
+    }); 
+  } 
+ 
+  void _showMessageOnDoubleTap() { 
+    setState(() { 
+      _message = 'Double Tap'; 
+    }); 
+  } 
+ 
+  @override 
+  Widget build(BuildContext context) { 
+    return Scaffold( 
+      appBar: AppBar(title: Text('Gesture Detector Example')), 
+      body: Center( 
+        child: GestureDetector( 
+          onDoubleTap: _showMessageOnDoubleTap, 
+          onPanUpdate: _changeMessageOnSwipe, 
+          child: Container( 
+            width: 200, 
+            height: 200, 
+            color: Colors.blue, 
+            alignment: Alignment.center, 
+            child: Text( 
+              _message, 
+              textAlign: TextAlign.center, 
+              style: TextStyle(color: Colors.white, fontSize: 20), 
+            ), 
+          ), 
+        ), 
+      ), 
+    ); 
+  } 
+} 
+ 
+
+
+
+Program 10:  Build a simple counter app with increment and decrement buttons to show subsequent values 
+on screen 
+
+import 'package:flutter/material.dart'; 
+ 
+void main() => runApp(MaterialApp(home: CounterHistoryPage())); 
+ 
+class CounterHistoryPage extends StatefulWidget { 
+  @override 
+  _CounterHistoryPageState createState() => _CounterHistoryPageState(); 
+} 
+ 
+class _CounterHistoryPageState extends State<CounterHistoryPage> { 
+  int _counter = 0; 
+  List<int> _history = [0]; 
+ 
+  void _increment() { 
+    setState(() { 
+      _counter++; 
+      _history.add(_counter); 
+    }); 
+  } 
+ 
+  void _decrement() { 
+    setState(() { 
+      _counter--; 
+      _history.add(_counter); 
+    }); 
+  } 
+ 
+  @override 
+  Widget build(BuildContext context) { 
+    return Scaffold( 
+      appBar: AppBar(title: Text('Counter with History'), centerTitle: true), 
+      body: Padding( 
+        padding: const EdgeInsets.all(16.0), 
+        child: Column( 
+          children: [ 
+            Text( 
+              'Current Value: $_counter', 
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), 
+            ), 
+            
